@@ -16,13 +16,10 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-/**
- * PlayerTrace 插件主类
- * 功能：记录玩家死亡坐标，聊天框提示，并支持 /back 指令传送回死亡地点
- */
+
 public class PlayerTracePlugin extends PluginBase {
 
-    /** 玩家 UUID -> 最近一次死亡位置 */
+    //最近一次死亡位置
     private final Map<UUID, Location> deathLocations = new ConcurrentHashMap<>();
     //玩家静止时长
     private final Map<UUID,Integer>  afkSeconds = new ConcurrentHashMap<>();
@@ -41,12 +38,12 @@ public class PlayerTracePlugin extends PluginBase {
         // 注册 /afktime 命令执行器
         PluginCommand<?> afkTimeCommand = (PluginCommand<?>) this.getCommand("afktime");
         afkTimeCommand.setExecutor(new AfkTimeCommand(this));
-        // 设置命令参数为目标选择器，客户端输入 /afktime 后会自动补全在线玩家名
+        // 设置命令参数为目标选择器，客户端输入
         afkTimeCommand.getCommandParameters().clear();
         afkTimeCommand.getCommandParameters().put("default", new CommandParameter[]{
                 CommandParameter.newType("player", CommandParamType.TARGET)
         });
-        // 每秒（20 tick）检测一次玩家挂机状态
+        // 每20 tick检测一次玩家挂机状态
         this.getServer().getScheduler().scheduleRepeatingTask(this, this::checkAfkPlayers, 20);
         this.getLogger().info("PlayerTrace 已启用！");
     }
@@ -60,23 +57,15 @@ public class PlayerTracePlugin extends PluginBase {
         this.getLogger().info("PlayerTrace 已禁用！");
     }
 
-    /**
-     * 记录玩家死亡位置
-     */
+  //记录玩家死亡位置
     public void recordDeathLocation(Player player, Location location) {
         deathLocations.put(player.getUniqueId(), location);
     }
 
-    /**
-     * 获取玩家最近一次死亡位置，没有记录时返回 null
-     */
     public Location getDeathLocation(Player player) {
         return deathLocations.get(player.getUniqueId());
     }
 
-    /**
-     * 移除玩家的死亡位置记录（传送回去后调用）
-     */
     public void removeDeathLocation(Player player) {
         deathLocations.remove(player.getUniqueId());
     }
@@ -99,12 +88,9 @@ public class PlayerTracePlugin extends PluginBase {
             Vector3 lastPos = lastPositions.get(uuid);
 
             if (lastPos != null) {
-                // 判断当前坐标和上一秒坐标是否一样
                 if (currentPos.distance(lastPos) < 0.1) {
-                    // 没动，秒数 +1
                     int seconds = afkSeconds.getOrDefault(uuid, 0) + 1;
                     afkSeconds.put(uuid, seconds);
-                    // 比如超过 300 秒 (5分钟) 判定为挂机
                     if (seconds == 300) {
                         afkStatus.put(uuid, true);
                         player.sendMessage("§e[提示] 你已经长时间未操作，进入挂机状态。");
