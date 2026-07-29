@@ -9,9 +9,6 @@ import cn.nukkit.level.Location;
 import cn.nukkit.utils.TextFormat;
 import org.Eggroll.playertrace.PlayerTracePlugin;
 
-/**
- * 玩家死亡事件监听器：记录死亡坐标并在聊天框中提示
- */
 public class DeathListener implements Listener {
 
     private final PlayerTracePlugin plugin;
@@ -26,7 +23,7 @@ public class DeathListener implements Listener {
         Location deathLocation = player.getLocation().clone();
 
         // 记录死亡位置
-        plugin.recordDeathLocation(player, deathLocation);
+        plugin.getDeathManager().recordDeathLocation(player, deathLocation);
 
         // 在聊天框中提示玩家死亡坐标
         String message = TextFormat.YELLOW + "你死亡了！死亡坐标: "

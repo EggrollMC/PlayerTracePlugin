@@ -1,0 +1,13 @@
+# PlayerTrace配置文件
+# 判定为挂机的时间（秒）
+afk-time: 300
+# 欢迎语
+welcome-display: true
+welcome-message: "欢迎来到服务器！"
+#例如 : xxx欢迎来到服务器!
+
+name-tag: true
+name-tag-prefix: "[§i挂机]"
+
+#战斗时禁用back指令
+back-battle: true

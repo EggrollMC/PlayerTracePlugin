@@ -29,12 +29,20 @@ public class AfkTimeCommand implements CommandExecutor {
             commandSender.sendMessage(TextFormat.RED + "该玩家不在线或不存在！");
             return true;
         }
-        int afkTime = plugin.getAfkTime(target);
-        if(afkTime == 0){
-            commandSender.sendMessage(TextFormat.RED + "该玩家没有挂机记录！");
-            return true;
+        int afkTime = plugin.getAfkManager().getAfkTime(target);
+        int onlineTime = plugin.getAfkManager().getOnlineTime(target);
+        //§e=== 玩家 [Steve] 的状态面板 ===
+        //§7  当前状态: §a 正常活动中
+        //§7  在线时长: §f1小时 25分钟
+        //§7  挂机时长: §f5分钟 12秒
+        commandSender.sendMessage("§e=== 玩家 [" + target.getName() + "] 的状态面板 ===");
+        if (plugin.getAfkManager().getAfkStatus(target)) {
+            commandSender.sendMessage("§7  当前状态: §e挂机中");
+        } else {
+            commandSender.sendMessage("§7  当前状态: §a正常活动中");
         }
-        commandSender.sendMessage(TextFormat.GREEN + "该玩家的挂机时长为：" + (afkTime / 60) + "分钟");
+        commandSender.sendMessage("§7  在线时长: §f" + onlineTime / 3600 + "小时 " + (onlineTime % 3600) / 60 + "分钟");
+        commandSender.sendMessage("§7  挂机时长: §f" + afkTime / 60 + "分钟 " + afkTime % 60 + "秒");
         return true;
     }
 }

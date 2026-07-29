@@ -2,8 +2,8 @@ name: PlayerTrace
 main: org.Eggroll.playertrace.PlayerTracePlugin
 version: ${project.version}
 api: ["1.0.13"]
-author: Eggroll
-description: 记录玩家死亡坐标，并支持 /back 指令传送回死亡地点
+author: ACGN-M_Eggroll
+description: 玩家行为足迹与轻量追踪插件
 website: https://github.com/Eggroll
 
 commands:
@@ -15,11 +15,20 @@ commands:
     description: 查询玩家挂机时长
     permission: afk.check
     usage: /afktime [玩家名]
+    aliases: [afk]
+  ptrace:
+    description: PlayerTrace总管理指令
+    usage: /ptrace [子指令]
+    aliases: [pt]
+    permission: playertrace.admin
 
 permissions:
   playertrace.back:
     description: 允许玩家使用 /back 指令回到死亡地点
     default: true
   playertrace.afktime:
-    description: 允许管理员或后台使用 /afktime 指令查询某一个玩家挂机时长
+    description: 允许管理员使用 /afktime 指令查询某一个玩家挂机时长
+    default: op
+  playertrace.ptrace:
+    description: 使用 /ptrace 或 /pt 指令查插件信息
     default: op

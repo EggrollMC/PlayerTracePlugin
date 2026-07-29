@@ -8,9 +8,6 @@ import cn.nukkit.level.Location;
 import cn.nukkit.utils.TextFormat;
 import org.Eggroll.playertrace.PlayerTracePlugin;
 
-/**
- * /back 命令执行器：将玩家传送回最近一次死亡地点
- */
 public class BackCommand implements CommandExecutor {
 
     private final PlayerTracePlugin plugin;
@@ -27,9 +24,16 @@ public class BackCommand implements CommandExecutor {
             return true;
         }
 
-        Location deathLocation = plugin.getDeathLocation(player);
+        Location deathLocation = plugin.getDeathManager().getDeathLocation(player);
         if (deathLocation == null) {
             player.sendMessage(TextFormat.RED + "没有找到你的死亡记录！");
+            return true;
+        }
+        Long lastUseTime = plugin.getDeathManager().getLastUseTime(player);
+        if(lastUseTime != null
+                && System.currentTimeMillis() - lastUseTime < 10
+                && plugin.getConfig().getBoolean("back-battle", true)){
+            player.sendMessage(TextFormat.RED + "战斗中无法使用该命令！");
             return true;
         }
 
@@ -41,7 +45,7 @@ public class BackCommand implements CommandExecutor {
                 + " Z: " + deathLocation.getFloorZ());
 
         // 传送后移除记录，防止重复使用
-        plugin.removeDeathLocation(player);
+        plugin.getDeathManager().removeDeathLocation(player);
         return true;
     }
 }
